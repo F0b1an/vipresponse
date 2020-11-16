@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Comment index{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header">
+        Lorem ipsum
+    </div>
+    <div class="card-body">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer auctor convallis convallis. Nulla viverra dolor non eros placerat auctor id at risus. In et neque augue. Aenean placerat, urna vel pretium viverra, augue augue sollicitudin mauris, volutpat hendrerit libero diam sollicitudin diam. Cras eget consequat est, ut fringilla enim. Aenean sodales mauris massa, eget ultricies ante commodo at. Nullam non laoreet felis, ut feugiat ipsum. Fusce malesuada dapibus felis, nec interdum ante ornare eget. Nulla sodales felis at congue commodo. Fusce aliquam pulvinar purus, in pretium ligula cursus id. Nullam placerat turpis nulla, sed gravida ligula efficitur vitae. In ornare elit tortor, in sollicitudin mi convallis vel. Mauris lobortis at dolor eget lacinia. Nam in turpis vel orci suscipit tincidunt. Integer ultrices mattis rhoncus. Aliquam at nisl a purus finibus volutpat commodo et arcu.
+    </div>
+</div>
+<div class="my-4">
+    <div class="card">
+        {% include 'comment/partial.html.twig' %}
+	</div>
+
+</div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+        	comment('{{ path('comment_new') }}', '#newComment');
+        });
+
+        function comment(url, target)
+        {
+        	jQuery.ajax({
+        		url: url,
+        		method: 'GET',
+        		cache: false,
+        	})
+        	.done(function(data) {
+        		if(data) {
+        			console.log(data);
+        			$(target).html(data);
+
+        			$('.ajaxForm').submit(function(event) {
+				    	event.preventDefault();
+
+				    	alert($(this).attr('method'));
+
+				    	jQuery.ajax({
+			        		url: $(this).children().attr('data-url'),
+			        		data: $(this).serialize(),
+			        		method: $(this).attr('method'),
+			        		cache: false,
+			        	})
+			        	.done(function(data) {
+			        		$('#comments').html(data);
+			        		comment('{{ path('comment_new') }}', '#newComment');
+			        	})
+			        	.fail(function() {
+			        		alert( "error" );
+			        	})
+				    	    
+				    });
+
+			        $('.getEditForm').submit(function(event) {
+			    		event.preventDefault();
+
+			    		var target = $(this).attr('data-target');
+
+				    	jQuery.ajax({
+			        		url: $(this).children().attr('data-url'),
+			        		data: $(this).serialize(),
+			        		method: $(this).attr('method'),
+			        		cache: false,
+			        	})
+			        	.done(function(data) {
+			        		$(target).html(data);
+
+			        		$('.editForm').submit(function(event) {
+			    				event.preventDefault();
+
+				        		jQuery.ajax({
+				        			url: $(this).children().attr('data-url'),
+					        		data: $(this).serialize(),
+					        		method: $(this).attr('method'),
+					        		cache: false,
+				        		})
+				        		.done(function(data) {
+				        			$('#comments').html(data);
+				        		})
+				        		.fail(function() {
+				        			alert( "error" );
+				        		})
+				        	})
+			        	})
+			        	.fail(function() {
+			        		alert( "error" );
+			        	})
+			        });	
+        		}
+        	})
+        	.fail(function() {
+        		alert( "error" );
+        	});
+        }
+    </script>
+{% endblock %}

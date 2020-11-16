@@ -1,0 +1,17 @@
+{% if app.user %}
+    <div class="card">
+        <div class="card-header" id="newComment" >
+            
+        </div>
+    </div>  
+{% else %}
+    <div class="card-header mt-2">
+        <b>Please <a href="{{ path('app_login') }}">log in</a> or <a href="{{ path('app_register') }}">register</a> to comment.</b>
+    </div>
+{% endif %}
+
+<div id="comments">
+    {% include 'comment/index.html.twig' %}
+</div>
+
+    

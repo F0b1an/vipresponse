@@ -1,0 +1,45 @@
+{% for comment in comments %}
+    <div class="mt-1">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col col-md-10">
+                        <b>{{ comment.user.username }}</b>
+                    </div>
+                    <div class="col">
+                        {{ comment.getUpdatedAt ? comment.getUpdatedAt|date('Y-m-d H:i:s') : '' }}
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col col-md-11" id="edit_{{ comment.id }}">
+                        {{ comment.message }}
+                    </div>
+                    <div class="col">
+                    {% if app.user %}
+                        {% if comment.user.id == app.user.id %}
+                            <div class="row">
+                                <div class="col col-md-6">
+                                	<form class="getEditForm" method="get" data-target="#edit_{{ comment.id }}">
+                                    	<button class="ajaxButton" data-url="{{ path('comment_edit', {'id': comment.id}) }}" type="submit">✏️</button>
+                                    </form>
+                                </div>
+                                <div class="col col-md-6">
+                                	<form class="ajaxForm deleteForm" method="post" data-target="#comments">
+                                		<button class="ajaxButton" data-url="{{ path('comment_delete', {'id': comment.id}) }}" type="submit">🗑</button>
+                                        <input type="hidden" name="_method" value="DELETE">
+    									<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    No comments :(
+{% endfor %}
